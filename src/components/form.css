@@ -1,0 +1,59 @@
+/* form.css */
+.form-container {
+    height: 100vh; /* Full view height */
+    background-image: url('/public/images/formbackground.avif'); /* Path to your background image */
+    background-size: cover; /* Cover the entire page */
+    background-position: center; /* Center the background image */
+    display: flex;
+    justify-content: flex-end; /* Align the form to the right */
+    align-items: center; /* Center align vertically */
+    padding-right: 10%; /* Right padding for spacing */
+  }
+  
+  .booking-form {
+    background: rgba(255, 255, 255, 0.8); /* Slightly transparent white background */
+    padding: 20px;
+    border-radius: 15px; /* Rounded corners */
+    width: 300px; /* Fixed form width */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: Adds a shadow for better visibility */
+  }
+  
+  .booking-form input[type="text"],
+  .booking-form input[type="date"],
+  .booking-form select,
+  .booking-form button {
+    display: block;
+    width: 100%;
+    margin: 10px 0; /* Add margin for spacing */
+    padding: 10px;
+    border-radius: 5px; /* Rounded corners for inputs and button */
+  }
+  
+  .booking-form button {
+    background-color: #007bff; /* Bootstrap primary blue */
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .booking-form button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  .radio-container {
+    display: flex;
+    justify-content: start;
+    gap: 20px; /* Creates space between the radio buttons */
+    margin-bottom: 20px; /* Adds some space below the radio button group */
+  }
+  
+  /* Style each radio button label for better spacing and alignment */
+  .booking-form label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  /* Style the radio button inputs */
+  .booking-form input[type="radio"] {
+    margin-right: 10px; /* Adds space between the radio button and its label */
+  }
