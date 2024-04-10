@@ -1,6 +1,6 @@
-// FormPage.js
-import React, { useState } from "react";
-import "./form.css"; // Ensure this CSS file exists in your project
+import React, { useState, useRef } from "react";
+import "./form.css"; 
+import { Link } from "react-router-dom";
 
 function FormPage() {
   const [formData, setFormData] = useState({
@@ -11,6 +11,8 @@ function FormPage() {
     returnDate: "",
     classType: "economy",
   });
+  const [isRecording, setIsRecording] = useState(false);
+  const speechRecognitionRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,14 +24,48 @@ function FormPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Implement your form submission logic here
     console.log(formData);
+  };
+
+  const toggleRecording = () => {
+    // Check for support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      console.error("Speech Recognition API is not supported in this browser.");
+      return;
+    }
+
+    // Initialize speech recognition if it hasn't been already
+    if (!speechRecognitionRef.current) {
+      speechRecognitionRef.current = new SpeechRecognition();
+      speechRecognitionRef.current.continuous = false;
+      speechRecognitionRef.current.interimResults = false;
+      speechRecognitionRef.current.lang = "en-US";
+      speechRecognitionRef.current.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        console.log(transcript); // Here, you could also update the state or form with the transcript
+      };
+      speechRecognitionRef.current.onend = () => {
+        setIsRecording(false);
+      };
+    }
+
+    // Toggle the recording state
+    if (isRecording) {
+      speechRecognitionRef.current.stop();
+    } else {
+      speechRecognitionRef.current.start();
+    }
+    setIsRecording(!isRecording); // Update the recording state
   };
 
   return (
     <div className="form-container">
+      <button className="circle-button" onClick={toggleRecording}>
+        <i className={isRecording ? "fas fa-microphone-slash" : "fas fa-microphone"} />
+      </button>
       <form onSubmit={handleSubmit} className="booking-form">
-        <div className="radio-container">
+      <div className="radio-container">
           <label>
             <input
               type="radio"
@@ -91,7 +127,8 @@ function FormPage() {
           <option value="business">Business</option>
           <option value="firstClass">First Class</option>
         </select>
-        <button type="submit">Submit</button>
+        <Link to="/details" style={{ textDecoration: "none" }}>
+        <button type="submit">Submit</button></Link>
       </form>
     </div>
   );

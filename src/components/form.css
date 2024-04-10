@@ -14,7 +14,7 @@
     background: rgba(255, 255, 255, 0.8); /* Slightly transparent white background */
     padding: 20px;
     border-radius: 15px; /* Rounded corners */
-    width: 300px; /* Fixed form width */
+    width: 450px; /* Fixed form width */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: Adds a shadow for better visibility */
   }
   
@@ -57,3 +57,26 @@
   .booking-form input[type="radio"] {
     margin-right: 10px; /* Adds space between the radio button and its label */
   }
+
+  .circle-button {
+    position: absolute; /* Position the button absolutely within its relative parent */
+    left: 5%; /* Position from the left of the container */
+    bottom: 50%; /* Position from the bottom, to approximately center it vertically */
+    transform: translateY(50%); /* Adjust vertical positioning */
+    width: 50px; /* Fixed width */
+    height: 50px; /* Fixed height to create a square, which will become a circle */
+    border-radius: 50%; /* Rounded borders to create a circle */
+    background-color: #fff; /* Bootstrap primary blue */
+    color: black; /* Text color */
+    border: none; /* No border */
+    cursor: pointer; /* Pointer cursor on hover */
+    display: flex; /* Use flexbox for aligning the text inside the button */
+    align-items: center; /* Center align vertically */
+    justify-content: center; /* Center align horizontally */
+    font-size: 24px; /* Larger font size for the button text/icon */
+  }
+  
+  .circle-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  

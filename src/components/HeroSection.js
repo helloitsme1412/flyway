@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "../App.css";
 import { Button } from "./Button";
 import "./HeroSection.css";
@@ -7,7 +7,7 @@ import {Link} from "react-router-dom";
 function HeroSection() {
   return (
     <div className="hero-container">
-      <video src="/videos/video-1.mp4" autoPlay loop muted />
+      <video src="/videos/FlyWayHomePageStockFootage.mp4" autoPlay loop muted />
       <h1>TICKET BOOKING MADE EASY</h1>
       <p>Try our latest voice command feature</p>
 
