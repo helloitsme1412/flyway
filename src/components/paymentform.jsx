@@ -164,8 +164,8 @@ export default function CForm({
         <Link to="/confirmation">
         <input
           type="submit"
-          value="pay now"
-          className="text-center btn w-full btn-outline"
+          value="Pay Now"
+          className="text-center btn w-full btn-outline "
         /></Link>
       </form>
     </div>
