@@ -8,6 +8,8 @@ import Products from './components/pages/Products';
 import SignUp from './components/pages/SignUp';
 import FormPage from './components/form';
 import Details from './components/details';
+import PaymentForm from './components/payment';
+import confirmation from './components/confirmation';
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
           <Route path='/sign-up' component={SignUp} />
           <Route path='/form' component={FormPage} />
           <Route path="/details" component={Details} />
+          <Route path="/payment" component={PaymentForm} />
+          <Route path="/confirmation" component={confirmation} />
         </Switch>
       </Router>
     </>
