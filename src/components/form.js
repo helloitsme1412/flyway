@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 function FormPage() {
   const [formData, setFormData] = useState({
     tripType: "oneWay",
+    name: "",
     from: "",
     to: "",
     departureDate: "",
@@ -28,14 +29,12 @@ function FormPage() {
   };
 
   const toggleRecording = () => {
-    // Check for support
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       console.error("Speech Recognition API is not supported in this browser.");
       return;
     }
 
-    // Initialize speech recognition if it hasn't been already
     if (!speechRecognitionRef.current) {
       speechRecognitionRef.current = new SpeechRecognition();
       speechRecognitionRef.current.continuous = false;
@@ -43,20 +42,19 @@ function FormPage() {
       speechRecognitionRef.current.lang = "en-US";
       speechRecognitionRef.current.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
-        console.log(transcript); // Here, you could also update the state or form with the transcript
+        console.log(transcript); // You could also update the state or form with the transcript
       };
       speechRecognitionRef.current.onend = () => {
         setIsRecording(false);
       };
     }
 
-    // Toggle the recording state
     if (isRecording) {
       speechRecognitionRef.current.stop();
     } else {
       speechRecognitionRef.current.start();
     }
-    setIsRecording(!isRecording); // Update the recording state
+    setIsRecording(!isRecording);
   };
 
   return (
@@ -65,7 +63,7 @@ function FormPage() {
         <i className={isRecording ? "fas fa-microphone-slash" : "fas fa-microphone"} />
       </button>
       <form onSubmit={handleSubmit} className="booking-form">
-      <div className="radio-container">
+        <div className="radio-container">
           <label>
             <input
               type="radio"
@@ -84,10 +82,18 @@ function FormPage() {
               checked={formData.tripType === "twoWay"}
               onChange={handleChange}
             />
-            Two Way
+            Return
           </label>
         </div>
-        <label htmlFor="classType">From</label>
+        <label htmlFor="Name">Full Name</label>
+        <input
+          type="text"
+          name="name"
+          placeholder="Name"
+          value={formData.name}
+          onChange={handleChange}
+        />
+        <label htmlFor="from">From</label>
         <input
           type="text"
           name="from"
@@ -95,7 +101,7 @@ function FormPage() {
           value={formData.from}
           onChange={handleChange}
         />
-        <label htmlFor="from">To</label>
+        <label htmlFor="to">To</label>
         <input
           type="text"
           name="to"
@@ -103,20 +109,24 @@ function FormPage() {
           value={formData.to}
           onChange={handleChange}
         />
-        <label htmlFor="Departure Date">Departure Date</label>
+        <label htmlFor="departureDate">Departure Date</label>
         <input
           type="date"
           name="departureDate"
           value={formData.departureDate}
           onChange={handleChange}
         />
-        <label htmlFor="Return Date">Return Date</label>
-        <input
-          type="date"
-          name="returnDate"
-          value={formData.returnDate}
-          onChange={handleChange}
-        />
+        {formData.tripType === "twoWay" && (
+          <>
+            <label htmlFor="returnDate">Return Date</label>
+            <input
+              type="date"
+              name="returnDate"
+              value={formData.returnDate}
+              onChange={handleChange}
+            />
+          </>
+        )}
         <label htmlFor="classType">Class</label>
         <select
           name="classType"
@@ -128,7 +138,8 @@ function FormPage() {
           <option value="firstClass">First Class</option>
         </select>
         <Link to="/details" style={{ textDecoration: "none" }}>
-        <button type="submit">Submit</button></Link>
+          <button type="submit">Submit</button>
+        </Link>
       </form>
     </div>
   );
