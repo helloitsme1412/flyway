@@ -1,59 +1,15 @@
 require('dotenv').config(); // Load environment variables from .env file
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const cors = require('cors');
 const { MongoClient } = require('mongodb');
 const { spawn } = require('child_process');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
-
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-    console.log("Connected successfully to MongoDB");
-});
-
-// Define a schema for the transcript
-const TranscriptSchema = new mongoose.Schema({
-    transcript: String,
-    timestamp: { type: Date, default: Date.now }
-});
-
-const Transcript = mongoose.model('Transcript', TranscriptSchema);
-
-// Routes
-app.post('/transcripts', (req, res) => {
-    if (!req.body.transcript) {
-        return res.status(400).send('Transcript is required');
-    }
-
-    const newTranscript = new Transcript({ transcript: req.body.transcript });
-    console.log("Attempting to save:", newTranscript);
-    
-    newTranscript.save()
-        .then(() => {
-            console.log("Saved successfully:", newTranscript);
-            res.status(201).send('Transcript saved');
-
-            // After saving, fetch data and call Python script
-            fetchDataAndCallPython();
-        })
-        .catch(err => {
-            console.error("Save failed:", err);
-            res.status(400).json('Error: ' + err);
-        });
-});
-
-async function fetchDataAndCallPython() {
+async function fetchData() {
     const uri = process.env.MONGODB_URI; // MongoDB Atlas connection string loaded from .env file
     const client = new MongoClient(uri);
 
@@ -74,14 +30,12 @@ async function fetchDataAndCallPython() {
 
             // Spawn a child Python process
             const childPython = spawn('python', ['flyway.py', result[0].transcript]); // Pass the latest transcription as a command-line argument
-            console.log("Python script has started running");
 
             let pythonOutput = '';
 
             // Collect data from Python script
             childPython.stdout.on('data', (data) => {
                 const jsonData = JSON.parse(data.toString()); // Parse the received data as JSON
-                console.log("Python script has sent JSON data:", jsonData);
                 sendDataToClient(jsonData); // Pass the JSON data to the sendDataToClient function
             });
 
@@ -90,7 +44,7 @@ async function fetchDataAndCallPython() {
             });
 
             childPython.on('close', (code) => {
-                console.log(`Python script has finished running with code ${code}`);
+                console.log(`child process exited with code ${code}`);
             });
 
         } else {
@@ -112,7 +66,11 @@ function sendDataToClient(data) {
     });
 }
 
-const PORT = process.env.PORT || 3001;
+// Call fetchData function
+fetchData();
+
+// Start the server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

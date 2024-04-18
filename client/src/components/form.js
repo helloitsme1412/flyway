@@ -1,12 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./form.css";
 import { Link } from "react-router-dom";
-import { useHistory } from 'react-router-dom';
-
-// Inside your component
 
 
-function FormPage() {
+function FormPage({ json_data }) {
   const [formData, setFormData] = useState({
     tripType: "oneWay",
     name: "",
@@ -19,7 +16,38 @@ function FormPage() {
   });
   const [isRecording, setIsRecording] = useState(false);
   const speechRecognitionRef = useRef(null);
-  const history = useHistory();
+
+
+// Function to fill form fields with data from JSON
+
+
+useEffect(() => {
+  // Fetch data from the server when the component mounts
+  fetchData();
+}, []);
+
+const fetchData = () => {
+  // Make a GET request to the server endpoint where the data is available
+  fetch("http://localhost:3001/extracted-data")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      // Update form fields with the received data
+      setFormData({
+        name: data.names ? data.names[0] : "",
+        from: data.from_location ? data.from_location : "",
+        to: data.to_location ? data.to_location : "",
+        departureDate: data.dates ? data.dates[0] : ""
+      });
+    })
+    .catch((error) =>
+      console.log("There has been an ambiguous problem in the fetch operation:", error)
+    );
+};
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,35 +57,22 @@ function FormPage() {
     }));
   };
 
-  /*const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
-  }; */
-
-
-  const handleSubmit = (e) => {
-    console.log("Form submitted")
-    e.preventDefault();
+  const handleSubmit = () => {
     fetch('http://localhost:3001/transcripts', {
-         method: 'POST',
-         headers: {
-             'Content-Type': 'application/json',
-         },
-         body: JSON.stringify({ transcript: formData.transcript }),
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ transcript: formData.transcript }),
     })
-    .then(response => {
-         if (!response.ok) {
-             throw new Error('Network response was not ok');
-         }
-         return response.json();
-    })
-    .then(data => {
-         console.log('Success:', data);
-         history.push('/details'); // Navigate to details page after successful submission
-    })
-    .catch((error) => console.error('Error:', error));
-   };
-
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }).catch((error) => console.log('There has been an ambiguous problem in the fetch operation:', error));
+  };
+  
 
   const toggleRecording = () => {
     const SpeechRecognition =
@@ -86,16 +101,18 @@ function FormPage() {
 
     if (isRecording) {
       speechRecognitionRef.current.stop();
+      handleSubmit();
     } else {
       speechRecognitionRef.current.start();
     }
     setIsRecording(!isRecording);
   };
+    
 
   return (
     <div className="page-layout">
       <div className="form-container">
-        <form onSubmit={handleSubmit} className="booking-form">
+        <form className="booking-form" onSubmit={handleSubmit}>
           <div className="radio-container">
             <label>
               <input
@@ -177,12 +194,11 @@ function FormPage() {
               checked={isRecording}
               onChange={toggleRecording}
             />
-            <span className="slider round">
-            </span>
+            <span className="slider round"></span>
           </label>
 
           <Link to="/details" style={{ textDecoration: "none" }}>
-            <button type="submit" onClick={handleSubmit}>Submit</button>
+             <button type="submit">Submit</button>
           </Link>
         </form>
       </div>
