@@ -80,3 +80,188 @@
     background-color: #0056b3; /* Darker blue on hover */
   }
   
+  .page-layout {
+    display: flex;
+    height: 100vh; /* Ensuring the entire page is filled vertically */
+    align-items: center; /* Centering content vertically */
+  }
+  
+  .form-container {
+    flex: 3; /* Giving more space to the form */
+    padding-left: 20px; /* Adding padding to separate it from the textarea */
+    display: flex;
+    justify-content: center; /* Centering form in the available space */
+    background-image: url('/public/images/formbackground.avif');
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .transcript-container {
+    flex: 1; /* Less space for the transcript container */
+    padding-right: 20px; /* Padding to separate it from the form */
+    display: flex;
+    justify-content: center; /* Centering textarea in the available space */
+  }
+  
+  .transcript-area {
+    width: 80%; /* Reducing the width to make the textarea smaller */
+    max-height: 600px; /* Limiting the height */
+    overflow-y: auto; /* Allows scrolling on overflow */
+    border: 1px solid #ccc; /* Adding a border for better visibility */
+    padding: 10px;
+  }
+  
+  /* Additional styles for inputs and buttons remain the same */
+  
+  .page-layout {
+  position: relative; /* Establishes a positioning context for absolutely positioned children */
+  height: 100vh; /* Ensures the entire viewport height is used */
+  display: flex; /* Enables flexbox layout */
+  justify-content: space-between; /* Spaces children (form and textarea) on opposite sides */
+}
+
+.form-container {
+  flex: 1; /* Takes up half of the space */
+  height: 100%; /* Full height */
+  display: flex;
+  justify-content: center; /* Centers the form horizontally */
+  align-items: center; /* Centers the form vertically */
+  background-image: url('/public/images/formbackground.avif'); /* Path to your background image */
+  background-size: cover; /* Cover the entire container */
+  background-position: center; /* Center the background image */
+  padding-right: 20px; /* Adds padding to create space between the form and the textarea */
+}
+
+.transcript-container {
+  position: absolute; /* Positioned absolutely relative to its nearest positioned ancestor */
+  right: 0; /* Align to the right side of the page */
+  top: 50%; /* Start from the middle of the page vertically */
+  transform: translateY(-50%); /* Center it vertically */
+  width: 300px; /* Fixed width for the textarea container */
+  height: 60%; /* Percentage of the viewport height */
+  padding: 10px; /* Padding around the textarea */
+  background: rgba(255, 255, 255, 0.5); /* Semi-transparent white background */
+  box-shadow: -2px 0px 8px rgba(0, 0, 0, 0.2); /* Soft shadow for a floating effect */
+  z-index: 1000; /* Ensures it floats above other content */
+}
+
+.transcript-area {
+  width: 100%; /* Full width of its container */
+  height: 100%; /* Full height of its container */
+  border: none; /* No border for a cleaner look */
+  background: transparent; /* Transparent background to allow the container's background to show */
+  color: #333; /* Text color for readability */
+  padding: 10px; /* Padding inside the textarea */
+  resize: none; /* Disable resizing to maintain the design */
+  outline: none; /* Removes outline to clean up focus state */
+}
+
+.page-layout {
+  position: relative; /* Establishes a positioning context for absolutely positioned children */
+  height: 100vh; /* Ensures the entire viewport height is used */
+  display: flex; /* Enables flexbox layout */
+  justify-content: space-between; /* Manages spacing between elements */
+}
+
+.form-container {
+  flex: 1; /* Takes up half of the space */
+  height: 100%; /* Full height */
+  display: flex;
+  justify-content: flex-start; /* Aligns the form to the left */
+  align-items: center; /* Centers the form vertically */
+  background-image: url('/public/images/formbackground.avif'); /* Path to your background image */
+  background-size: cover; /* Cover the entire container */
+  background-position: center; /* Center the background image */
+  padding-left: 200px; /* Adds padding to keep form from the very edge */
+}
+
+.transcript-container {
+  position: absolute; /* Positioned absolutely relative to its nearest positioned ancestor */
+  right: 0; /* Align to the right side of the page */
+  top: 50%; /* Start from the middle of the page vertically */
+  transform: translateY(-50%); /* Center it vertically */
+  width: 300px; /* Fixed width for the textarea container */
+  height: 60%; /* Percentage of the viewport height */
+  padding: 10px; /* Padding around the textarea */
+  background: rgba(255, 255, 255, 0.5); /* Semi-transparent white background */
+  box-shadow: -2px 0px 8px rgba(0, 0, 0, 0.2); /* Soft shadow for a floating effect */
+  z-index: 1000; /* Ensures it floats above other content */
+  margin-right: 200px; /* Right margin to ensure some spacing from the edge */
+}
+
+.transcript-area {
+  width: 100%; /* Full width of its container */
+  height: 100%; /* Full height of its container */
+  border: none; /* No border for a cleaner look */
+  background: transparent; /* Transparent background to allow the container's background to show */
+  color: #333; /* Text color for readability */
+  padding: 10px; /* Padding inside the textarea */
+  resize: none; /* Disable resizing to maintain the design */
+  outline: none; /* Removes outline to clean up focus state */
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider:after {
+  content: "OFF";
+  color: white;
+  display: block;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  top: 50%;
+  left: 75%;
+  font-size: 10px;
+  font-family: Verdana, sans-serif;
+}
+
+input:checked + .slider:after {
+  content: "ON";
+  left: 25%;
+}
