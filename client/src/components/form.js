@@ -1,6 +1,10 @@
 import React, { useState, useRef } from "react";
 import "./form.css";
 import { Link } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
+
+// Inside your component
+
 
 function FormPage() {
   const [formData, setFormData] = useState({
@@ -15,6 +19,7 @@ function FormPage() {
   });
   const [isRecording, setIsRecording] = useState(false);
   const speechRecognitionRef = useRef(null);
+  const history = useHistory();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,19 +34,29 @@ function FormPage() {
     console.log(formData);
   }; */
 
+
   const handleSubmit = (e) => {
+    console.log("Form submitted")
     e.preventDefault();
-    fetch('http://localhost:5000/transcripts', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ transcript: formData.transcript }),
+    fetch('http://localhost:3001/transcripts', {
+         method: 'POST',
+         headers: {
+             'Content-Type': 'application/json',
+         },
+         body: JSON.stringify({ transcript: formData.transcript }),
     })
-    .then(response => response.json())
-    .then(data => console.log('Success:', data))
+    .then(response => {
+         if (!response.ok) {
+             throw new Error('Network response was not ok');
+         }
+         return response.json();
+    })
+    .then(data => {
+         console.log('Success:', data);
+         history.push('/details'); // Navigate to details page after successful submission
+    })
     .catch((error) => console.error('Error:', error));
-};
+   };
 
 
   const toggleRecording = () => {
@@ -167,7 +182,7 @@ function FormPage() {
           </label>
 
           <Link to="/details" style={{ textDecoration: "none" }}>
-            <button type="submit">Submit</button>
+            <button type="submit" onClick={handleSubmit}>Submit</button>
           </Link>
         </form>
       </div>

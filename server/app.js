@@ -2,13 +2,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const helmet = require('helmet');
+require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(helmet());
 
 // Connect to MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/flyway', {
+mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -29,21 +32,25 @@ const Transcript = mongoose.model('Transcript', TranscriptSchema);
 
 // Routes
 app.post('/transcripts', (req, res) => {
+    if (!req.body.transcript) {
+        return res.status(400).send('Transcript is required');
+    }
+
     const newTranscript = new Transcript({ transcript: req.body.transcript });
-    console.log("Attempting to save:", newTranscript);  // Log what is being saved
+    console.log("Attempting to save:", newTranscript);
     
     newTranscript.save()
         .then(() => {
-            console.log("Saved successfully:", newTranscript);  // Log the saved transcript
+            console.log("Saved successfully:", newTranscript);
             res.status(201).send('Transcript saved');
         })
         .catch(err => {
-            console.error("Save failed:", err);  // Log any errors that occur
+            console.error("Save failed:", err);
             res.status(400).json('Error: ' + err);
         });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
