@@ -1,6 +1,6 @@
 ### FLYWAY
 
-Flyway is a project for [brief description goes here].
+Flyway is a project for Flight Booking System
 
 #### Prerequisites
 
@@ -9,6 +9,7 @@ Before you begin, ensure you have met the following requirements:
 - Node.js and npm installed on your local machine.
 - MongoDB installed and running locally or accessible remotely.
 - Git installed on your local machine.
+- Dependencies for machine learning models (if applicable).
 
 #### Installation
 
@@ -24,13 +25,20 @@ To install this project, follow these steps:
     cd project-name
     ```
 
-3. Install dependencies for both the frontend and backend:
-    ```bash
+3. Install dependencies for both the frontend, backend:
     cd client
     npm install
     cd ../server
     npm install
+    cd ../models
     ```
+4. Install dependencies for Machine Learning and python code:
+    python  -m venv myenv
+    myenv\Scripts\Activate
+    pip install -r requirements.txt
+    pip install spacy
+    python -m spacy download en_core_web_sm
+
 
 #### Configuration
 
