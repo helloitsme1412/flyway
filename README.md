@@ -26,6 +26,7 @@ To install this project, follow these steps:
     ```
 
 3. Install dependencies for both the frontend, backend:
+    ```bash
     cd client
     npm install
     cd ../server
@@ -33,11 +34,13 @@ To install this project, follow these steps:
     cd ../models
     ```
 4. Install dependencies for Machine Learning and python code:
+    ```bash
     python  -m venv myenv
     myenv\Scripts\Activate
     pip install -r requirements.txt
     pip install spacy
     python -m spacy download en_core_web_sm
+    ```
 
 
 #### Configuration
