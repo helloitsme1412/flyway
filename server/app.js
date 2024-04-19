@@ -2,15 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const helmet = require('helmet');
+//const helmet = require('helmet');
 require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-app.use(helmet());
+//app.use(helmet());
 const a = "XD";
-
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
