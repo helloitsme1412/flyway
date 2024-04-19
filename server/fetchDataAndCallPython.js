@@ -1,15 +1,8 @@
 require('dotenv').config(); // Load environment variables from .env file
 const { MongoClient } = require('mongodb');
 const { spawn } = require('child_process');
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
 
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
-
-async function fetchData() {
+async function fetchDataAndCallPython(app) {
     const uri = process.env.MONGODB_URI; // MongoDB Atlas connection string loaded from .env file
     const client = new MongoClient(uri);
 
@@ -30,13 +23,13 @@ async function fetchData() {
 
             // Spawn a child Python process
             const childPython = spawn('python', ['flyway.py', result[0].transcript]); // Pass the latest transcription as a command-line argument
-
-            let pythonOutput = '';
+            console.log("Python script has started running");
 
             // Collect data from Python script
             childPython.stdout.on('data', (data) => {
                 const jsonData = JSON.parse(data.toString()); // Parse the received data as JSON
-                sendDataToClient(jsonData); // Pass the JSON data to the sendDataToClient function
+                console.log("Python script has sent JSON data:", jsonData);
+                sendDataToClient(app, jsonData); // Pass the JSON data to the sendDataToClient function
             });
 
             childPython.stderr.on('data', (data) => {
@@ -44,7 +37,7 @@ async function fetchData() {
             });
 
             childPython.on('close', (code) => {
-                console.log(`child process exited with code ${code}`);
+                console.log(`Python script has finished running with code ${code}`);
             });
 
         } else {
@@ -59,18 +52,17 @@ async function fetchData() {
 }
 
 // Function to send data to the frontend
-function sendDataToClient(data) {
+function sendDataToClient(app, data) {
+    console.log("Sending data to client...");
     // Send data to the frontend using a route
     app.get('/extracted-data', (req, res) => {
-        res.json(data); // Send extracted data as JSON response
+        console.log("Serving latest processed data...");
+        if (data) {
+            res.json(data);
+        } else {
+            res.status(404).send('No data available');
+        }
     });
 }
 
-// Call fetchData function
-fetchData();
-
-// Start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+module.exports = { fetchDataAndCallPython, sendDataToClient }; // Export both functions

@@ -17,37 +17,37 @@ function FormPage({ json_data }) {
   const [isRecording, setIsRecording] = useState(false);
   const speechRecognitionRef = useRef(null);
 
+  useEffect(() => {
+    fetchData();
+  }, []); // Empty dependency array to fetch data only once when the component mounts
 
-// Function to fill form fields with data from JSON
-
-
-useEffect(() => {
-  // Fetch data from the server when the component mounts
-  fetchData();
-}, []);
-
-const fetchData = () => {
-  // Make a GET request to the server endpoint where the data is available
-  fetch("http://localhost:3001/extracted-data")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      // Update form fields with the received data
-      setFormData({
-        name: data.names ? data.names[0] : "",
-        from: data.from_location ? data.from_location : "",
-        to: data.to_location ? data.to_location : "",
-        departureDate: data.dates ? data.dates[0] : ""
+  const fetchData = () => {
+    fetch("http://localhost:3001/extracted-data") // Fetch data from the server
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Received data from server:", data);
+        setFormData({
+          tripType: "oneWay", // Assuming default values
+          name: data.names ? data.names[0] : "", // Extracting name
+          from: data.from_location ? data.from_location : "", // Extracting from location
+          to: data.to_location ? data.to_location : "", // Extracting to location
+          departureDate: data.dates ? data.dates[0] : "", // Extracting departure date
+          returnDate: "", // Assuming return date is not available
+          classType: "economy", // Assuming default class type
+          transcript: "", // Assuming transcript is not available
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
       });
-    })
-    .catch((error) =>
-      console.log("There has been an ambiguous problem in the fetch operation:", error)
-    );
-};
+  };
+  
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;

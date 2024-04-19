@@ -76,8 +76,6 @@ async function fetchDataAndCallPython() {
             const childPython = spawn('python', ['flyway.py', result[0].transcript]); // Pass the latest transcription as a command-line argument
             console.log("Python script has started running");
 
-            let pythonOutput = '';
-
             // Collect data from Python script
             childPython.stdout.on('data', (data) => {
                 const jsonData = JSON.parse(data.toString()); // Parse the received data as JSON
@@ -104,15 +102,27 @@ async function fetchDataAndCallPython() {
     }
 }
 
+
 // Function to send data to the frontend
 function sendDataToClient(data) {
     // Send data to the frontend using a route
     app.get('/extracted-data', (req, res) => {
-        res.json(data); // Send extracted data as JSON response
+        console.log("Serving latest processed data...");
+        if (data) { // Use the 'data' parameter received by the function
+            res.json(data); // Send the received data
+        } else {
+            res.status(404).send('No data available');
+        }
     });
 }
+
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+
+
+
+
