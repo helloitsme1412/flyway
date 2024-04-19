@@ -21,31 +21,32 @@ function FormPage({ json_data }) {
     fetchData();
   }, []); // Empty dependency array to fetch data only once when the component mounts
 
-  const fetchData = () => {
-    fetch("http://localhost:3001/extracted-data") // Fetch data from the server
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Received data from server:", data);
-        setFormData({
-          tripType: "oneWay", // Assuming default values
-          name: data.names ? data.names[0] : "", // Extracting name
-          from: data.from_location ? data.from_location : "", // Extracting from location
-          to: data.to_location ? data.to_location : "", // Extracting to location
-          departureDate: data.dates ? data.dates[0] : "", // Extracting departure date
-          returnDate: "", // Assuming return date is not available
-          classType: "economy", // Assuming default class type
-          transcript: "", // Assuming transcript is not available
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
+const fetchData = () => {
+  fetch("http://localhost:3001/extracted-data")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Received data from server:", data);
+      setFormData({
+        tripType: "oneWay", // Assuming default values
+        name: data.names ? data.names[0] : "", // Extracting name
+        from: data.from_location ? data.from_location : "", // Extracting from location
+        to: data.to_location ? data.to_location : "", // Extracting to location
+        departureDate: data.dates ? data.dates[0] : "", // Extracting departure date
+        returnDate: "", // Assuming return date is not available
+        classType: "economy", // Assuming default class type
+        transcript: "", // Assuming transcript is not available
       });
-  };
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
+};
+
   
 
 
@@ -102,6 +103,10 @@ function FormPage({ json_data }) {
     if (isRecording) {
       speechRecognitionRef.current.stop();
       handleSubmit();
+      // Reload the page after 2 seconds
+      setTimeout(() => {
+      window.location.reload();
+    }, 7000); // Refresh after 2 seconds (2000 milliseconds)
     } else {
       speechRecognitionRef.current.start();
     }

@@ -12,8 +12,8 @@ def format_date(date_string):
     date_string = re.sub(r'(?<=\d)(st|nd|rd|th)\b', '', date_string)
     # Convert the string to a datetime object
     date_object = datetime.strptime(date_string, "%d %B %Y")
-    # Format the datetime object in the desired format (dd-mm-yyyy)
-    formatted_date = date_object.strftime("%d-%m-%Y")
+    # Format the datetime object in the desired format (YYYY-MM-DD)
+    formatted_date = date_object.strftime("%Y-%m-%d")
     return formatted_date
 
 def process_text(text):
