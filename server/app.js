@@ -30,6 +30,9 @@ const TranscriptSchema = new mongoose.Schema({
 
 const Transcript = mongoose.model('Transcript', TranscriptSchema);
 
+// Global variable to hold the latest processed data
+let latestProcessedData = null;
+
 // Routes
 app.post('/transcripts', (req, res) => {
     if (!req.body.transcript) {
@@ -80,7 +83,7 @@ async function fetchDataAndCallPython() {
             childPython.stdout.on('data', (data) => {
                 const jsonData = JSON.parse(data.toString()); // Parse the received data as JSON
                 console.log("Python script has sent JSON data:", jsonData);
-                sendDataToClient(jsonData); // Pass the JSON data to the sendDataToClient function
+                updateLatestProcessedData(jsonData); // Update the latest processed data
             });
 
             childPython.stderr.on('data', (data) => {
@@ -102,27 +105,21 @@ async function fetchDataAndCallPython() {
     }
 }
 
-
-// Function to send data to the frontend
-function sendDataToClient(data) {
-    // Send data to the frontend using a route
-    app.get('/extracted-data', (req, res) => {
-        console.log("Serving latest processed data...");
-        if (data) { // Use the 'data' parameter received by the function
-            res.json(data); // Send the received data
-        } else {
-            res.status(404).send('No data available');
-        }
-    });
+// Function to update the latest processed data
+function updateLatestProcessedData(data) {
+    latestProcessedData = data;
 }
 
+// Route to serve the latest processed data
+app.get('/extracted-data', (req, res) => {
+    if (latestProcessedData) {
+        res.json(latestProcessedData);
+    } else {
+        res.status(404).send('No data available');
+    }
+});
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-
-
-
-
-

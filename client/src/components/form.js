@@ -16,36 +16,59 @@ function FormPage({ json_data }) {
   });
   const [isRecording, setIsRecording] = useState(false);
   const speechRecognitionRef = useRef(null);
+// eslint-disable-next-line no-unused-vars
+const [previousData, setPreviousData] = useState(null);
+
 
   useEffect(() => {
     fetchData();
   }, []); // Empty dependency array to fetch data only once when the component mounts
 
-const fetchData = () => {
-  fetch("http://localhost:3001/extracted-data")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log("Received data from server:", data);
-      setFormData({
-        tripType: "oneWay", // Assuming default values
-        name: data.names ? data.names[0] : "", // Extracting name
-        from: data.from_location ? data.from_location : "", // Extracting from location
-        to: data.to_location ? data.to_location : "", // Extracting to location
-        departureDate: data.dates ? data.dates[0] : "", // Extracting departure date
-        returnDate: "", // Assuming return date is not available
-        classType: "economy", // Assuming default class type
-        transcript: "", // Assuming transcript is not available
-      });
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
-};
+  const fetchData = () => {
+    fetch("http://localhost:3001/extracted-data")
+       .then((response) => {
+         if (!response.ok) {
+           throw new Error("Network response was not ok");
+         }
+         return response.json();
+       })
+       .then((data) => {
+         console.log("Received data from server:", data);
+   
+         // Use functional update to ensure we're working with the most current state
+         setFormData(prevData => {
+           // Compare the newly fetched data with the previous data
+           if (JSON.stringify(data) !== JSON.stringify(prevData)) {
+             // Update formData state with new data
+             return {
+               tripType: "oneWay", // Assuming default values
+               name: data.names ? data.names[0] : "", // Extracting name
+               from: data.from_location ? data.from_location : "", // Extracting from location
+               to: data.to_location ? data.to_location : "", // Extracting to location
+               departureDate: data.dates ? data.dates[0] : "", // Extracting departure date
+               returnDate: "", // Assuming return date is not available
+               classType: "economy", // Assuming default class type
+               transcript: "", // Assuming transcript is not available
+             };
+            
+           } else {
+             // If the data is the same, return the previous state
+             return prevData;
+           }
+         });
+   
+         // Update the previous data with the newly fetched data
+         setPreviousData(data);
+        
+        
+       })
+       .catch((error) => {
+         console.error("Error fetching data:", error);
+       });
+   };
+   
+  
+  
 
   
 
@@ -103,10 +126,9 @@ const fetchData = () => {
     if (isRecording) {
       speechRecognitionRef.current.stop();
       handleSubmit();
-      // Reload the page after 2 seconds
-      setTimeout(() => {
-      window.location.reload();
-    }, 7000); // Refresh after 2 seconds (2000 milliseconds)
+      setTimeout(() => {  // reload page
+        window.location.reload();
+      }, 6000);
     } else {
       speechRecognitionRef.current.start();
     }
