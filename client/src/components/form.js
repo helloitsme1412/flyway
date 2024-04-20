@@ -15,52 +15,54 @@ function FormPage({ json_data }) {
   });
   const [isRecording, setIsRecording] = useState(false);
   const speechRecognitionRef = useRef(null);
-  // eslint-disable-next-line no-unused-vars
-  const [previousData, setPreviousData] = useState(null);
 
   useEffect(() => {
     fetchData();
   }, []); // Empty dependency array to fetch data only once when the component mounts
 
   const fetchData = () => {
-    fetch("http://localhost:3001/extracted-data")
+    fetch("http://localhost:3001/extracted-data") // Fetch data from the server
       .then((response) => {
-        if (!response.ok) {
+        if (!response) {
           throw new Error("Network response was not ok");
         }
         return response.json();
       })
       .then((data) => {
         console.log("Received data from server:", data);
-
-        // Use functional update to ensure we're working with the most current state
-        setFormData((prevData) => {
-          // Compare the newly fetched data with the previous data
-          if (JSON.stringify(data) !== JSON.stringify(prevData)) {
-            // Update formData state with new data
-            return {
-              tripType: "oneWay", // Assuming default values
-              name: data.names ? data.names[0] : "", // Extracting name
-              from: data.from_location ? data.from_location : "", // Extracting from location
-              to: data.to_location ? data.to_location : "", // Extracting to location
-              departureDate: data.dates ? data.dates[0] : "", // Extracting departure date
-              returnDate: "", // Assuming return date is not available
-              classType: "economy", // Assuming default class type
-              transcript: "", // Assuming transcript is not available
-            };
-          } else {
-            // If the data is the same, return the previous state
-            return prevData;
-          }
+        setFormData({
+          tripType: "oneWay", // Assuming default values
+          name: data.names ? data.names[0] : "", // Extracting name
+          from: data.from_location ? data.from_location : "", // Extracting from location
+          to: data.to_location ? data.to_location : "", // Extracting to location
+          departureDate: data.dates ? data.dates[0] : "", // Extracting departure date
+          returnDate: "", // Assuming return date is not available
+          classType: "economy", // Assuming default class type
+          transcript: "", // Assuming transcript is not available
         });
-
-        // Update the previous data with the newly fetched data
-        setPreviousData(data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   };
+  
+  const database = () => {
+    // Prevent the default form submit action
+    fetch('http://localhost:3001/search-flights', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ from: formData.from, to: formData.to })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Search results:', data);
+      // you might want to redirect or do something with the data here
+    })
+    .catch(error => console.error('Error:', error));
+  };
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,26 +73,21 @@ function FormPage({ json_data }) {
   };
 
   const handleSubmit = () => {
-    fetch("http://localhost:3001/transcripts", {
-      method: "POST",
+    fetch('http://localhost:3001/transcripts', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ transcript: formData.transcript }),
     })
-      .then((response) => {
+      .then(response => {
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error('Network response was not ok');
         }
         return response.json();
-      })
-      .catch((error) =>
-        console.log(
-          "There has been an ambiguous problem in the fetch operation:",
-          error
-        )
-      );
+    }).catch((error) => console.log('There has been an ambiguous problem in the fetch operation:', error));
   };
+  
 
   const toggleRecording = () => {
     const SpeechRecognition =
@@ -123,17 +120,22 @@ function FormPage({ json_data }) {
       setTimeout(() => {
         // reload page
         window.location.reload();
+       
       }, 6000);
+
+      
+      
     } else {
       speechRecognitionRef.current.start();
     }
     setIsRecording(!isRecording);
   };
+    
 
   return (
     <div className="page-layout">
       <div className="form-container">
-        <form className="booking-form">
+        <form className="booking-form" onSubmit={handleSubmit}>
           <div className="radio-container">
             <label>
               <input
@@ -215,11 +217,11 @@ function FormPage({ json_data }) {
               checked={isRecording}
               onChange={toggleRecording}
             />
-            <span className="slider"></span>
+            <span className="slider round"></span>
           </label>
 
-          <Link to="/details" style={{ textDecoration: "none" }}>
-            <button type="submit">Submit</button>
+          <Link to="/details" style={{ textDecoration: "none" }} onClick={database}>
+               <button type="submit">Submit</button>
           </Link>
         </form>
       </div>
