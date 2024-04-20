@@ -13,7 +13,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
-// const MONGODB_URI="  "
+// const MONGODB_URI="mongodb+srv://hulkironman34523:P0ph6GdD3brMY4zO@loginn.bvfojnb.mongodb.net/?retryWrites=true&w=majority&appName=LOGINN"
 async function fetchData(from, to) {
     const uri = process.env.MONGODB_URI;
     const client = new MongoClient(uri);
@@ -25,11 +25,10 @@ async function fetchData(from, to) {
         const database = client.db('manish');
         const collection = database.collection('flight');
 
-        const query = { from, to };
-        const projection = { from: 1, to: 1 };
+        const query = { from, to};
+        const projection = { from: 1, to: 1, airline: 1, flightNumber: 1 };
         const result = await collection.find(query, { projection }).toArray();
         console.log(result);
-       
 }
         catch (error) {
         console.error("Error connecting to the database:", error);
