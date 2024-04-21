@@ -1,39 +1,42 @@
-require('dotenv').config(); // Load environment variables from .env file
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { MongoClient } = require('mongodb');
+
+const { MongoClient, ObjectId } = require('mongodb');
 const { spawn } = require('child_process');
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Connect to MongoDB
+// Mongoose Connection for Transcripts
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
 
 const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
+db.on('error', console.error.bind(console, 'Mongoose connection error:'));
 db.once('open', function() {
-    console.log("Connected successfully to MongoDB");
+    console.log("Connected successfully to MongoDB via Mongoose");
 });
 
-// Define a schema for the transcript
+// Define Mongoose schema and model for transcripts
 const TranscriptSchema = new mongoose.Schema({
     transcript: String,
     timestamp: { type: Date, default: Date.now }
 });
-
 const Transcript = mongoose.model('Transcript', TranscriptSchema);
+
+// MongoDB client for fetching data
+const client = new MongoClient(process.env.MONGODB_URI);
 
 // Global variable to hold the latest processed data
 let latestProcessedData = null;
 
-// Routes
+// Route for posting transcripts
 app.post('/transcripts', (req, res) => {
     if (!req.body.transcript) {
         return res.status(400).send('Transcript is required');
@@ -56,6 +59,7 @@ app.post('/transcripts', (req, res) => {
         });
 });
 
+// Function to fetch data and call a Python script
 async function fetchDataAndCallPython() {
     const uri = process.env.MONGODB_URI; // MongoDB Atlas connection string loaded from .env file
     const client = new MongoClient(uri);
@@ -119,7 +123,47 @@ app.get('/extracted-data', (req, res) => {
     }
 });
 
+
+
+async function fetchData(from, to) {
+    const uri = process.env.MONGODB_URI;
+    const client = new MongoClient(uri);
+
+    try {
+        await client.connect();
+        console.log("Connected to MongoDB Atlas");
+
+        const database = client.db('manish');
+        const collection = database.collection('flight');
+
+        const query = { from, to};
+        const projection = { from: 1, to: 1, airline: 1, flightNumber: 1 };
+        const result = await collection.find(query, { projection }).toArray();
+        console.log(result);
+        return result;
+}
+        catch (error) {
+        console.error("Error connecting to the database:", error);
+        throw new Error("Unable to connect to the database");
+    } finally {
+        await client.close();
+    }
+}
+
+app.post('/search-flights', async (req, res) => {
+    const { from, to } = req.body;
+    try {
+        const results = await fetchData(from, to);
+        res.json(results);
+    } catch (error) {
+        console.error("Error searching flights:", error);
+        res.status(500).json({ error: "An error occurred while searching flights" });
+    }
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+fetchData()
