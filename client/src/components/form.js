@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./form.css";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 function FormPage({ json_data }) {
+  const history = useHistory();
+  
   const [formData, setFormData] = useState({
     tripType: "oneWay",
     name: "",
@@ -59,6 +61,7 @@ function FormPage({ json_data }) {
     .then(data => {
       console.log('Search results:', data);
       // you might want to redirect or do something with the data here
+      history.push('/details', { flights: data });
     })
     .catch(error => console.error('Error:', error));
   };
