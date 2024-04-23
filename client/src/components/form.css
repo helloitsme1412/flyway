@@ -1,7 +1,7 @@
 /* form.css */
 .form-container {
     height: 100vh; /* Full view height */
-    background-image: url('/public/images/formbackground.avif'); /* Path to your background image */
+    background-image: url('/public/images/plane.jpg'); /* Path to your background image */
     background-size: cover; /* Cover the entire page */
     background-position: center; /* Center the background image */
     display: flex;
@@ -91,7 +91,7 @@
     padding-left: 20px; /* Adding padding to separate it from the textarea */
     display: flex;
     justify-content: center; /* Centering form in the available space */
-    background-image: url('/public/images/formbackground.avif');
+    background-image: url('/public/images/plane.jpg');
     background-size: cover;
     background-position: center;
   }
@@ -126,7 +126,7 @@
   display: flex;
   justify-content: center; /* Centers the form horizontally */
   align-items: center; /* Centers the form vertically */
-  background-image: url('/public/images/formbackground.avif'); /* Path to your background image */
+  background-image: url('/public/images/plane.jpg'); /* Path to your background image */
   background-size: cover; /* Cover the entire container */
   background-position: center; /* Center the background image */
   padding-right: 20px; /* Adds padding to create space between the form and the textarea */
@@ -169,7 +169,7 @@
   display: flex;
   justify-content: flex-start; /* Aligns the form to the left */
   align-items: center; /* Centers the form vertically */
-  background-image: url('/public/images/formbackground.avif'); /* Path to your background image */
+  background-image: url('/public/images/plane.jpg'); /* Path to your background image */
   background-size: cover; /* Cover the entire container */
   background-position: center; /* Center the background image */
   padding-left: 200px; /* Adds padding to keep form from the very edge */

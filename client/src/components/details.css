@@ -1,32 +1,46 @@
-/* details.css */
-.flight-details-container {
-    background-color: #f0f0f0; /* Light grey background */
-    border-radius: 8px;
-    padding: 20px;
-    max-width: 600px; /* Maximum width of the container */
-    margin: 20px auto; /* Centering the container */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adding a subtle shadow */
-  }
-  
-  .flight-detail {
-    margin-bottom: 10px;
-    font-size: 16px; /* Setting the font size for flight details */
-  }
-  
-  .submit-button {
-    background-color: #007bff; /* Bootstrap primary color for the button */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    display: block; /* Make the button block to fill the container width */
-    width: 100%;
-    margin-top: 20px; /* Extra space above the button */
-  }
-  
-  .submit-button:hover {
-    background-color: #0056b3; /* Darker shade on hover */
-  }
-  
+.flights-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.flight-card {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  width: 80%;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flight-info {
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.price {
+  color: green;
+  font-weight: bold;
+}
+
+.book-button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.book-button:hover {
+  background-color: #45a049;
+}

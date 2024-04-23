@@ -1,25 +1,27 @@
 import React from "react";
 import "./details.css";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import { Link } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 function Details() {
-  // Example flight details
-  const flightDetails = {
-    flightName: "Flight A123",
-    duration: "5 hours",
-    price: "$349"
-  };
+  const location = useLocation();
+  const flights = location.state ? location.state.flights : [];  // Ensure to handle undefined state
 
   return (
-    <div className="flight-details-container">
-      <h2>Flight Details</h2>
-      <div className="flight-detail"><strong>Flight Name:</strong> {flightDetails.flightName}</div>
-      <div className="flight-detail"><strong>Time to Destination:</strong> {flightDetails.duration}</div>
-      <div className="flight-detail"><strong>Price:</strong> {flightDetails.price}</div>
-      <Link to="/payment" style={{ textDecoration: "none" }}>
-      <button type="button" className="submit-button">
-      Book Now</button>
-      </Link>
+    <div className="flights-container">
+      {flights.map((flight, index) => (
+        <div key={index} className="flight-card">
+          <div className="flight-info">
+            <div><strong>From:</strong> {flight.from}</div>
+            <div><strong>To:</strong> {flight.to}</div>
+            <div><strong>Airline:</strong> {flight.airline}</div>
+            <div><strong>Flight Number:</strong> {flight.flightNumber}</div>
+          </div>
+          <Link to="/payment" style={{ textDecoration: "none" }}>
+            <button className="book-button">Book Now</button>
+          </Link>
+        </div>
+      ))}
     </div>
   );
 }
