@@ -4,14 +4,11 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const { MongoClient, ObjectId } = require('mongodb');
-const { spawn } = require('child_process');
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Mongoose Connection for Transcripts
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
